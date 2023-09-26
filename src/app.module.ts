@@ -1,10 +1,25 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { configuration } from './config';
+import { PostService } from './database/post/post.service';
+import entitys from './database/entitys';
 
 @Module({
-  imports: [],
+  imports: [
+    TypeOrmModule.forRootAsync({
+      useFactory: async () => {
+        const config = await configuration();
+        return {
+          type: 'mysql',
+          entities: [...entitys],
+          ...config.mysql_config,
+        };
+      },
+    }),
+    TypeOrmModule.forFeature([...entitys]),
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [PostService],
 })
 export class AppModule {}

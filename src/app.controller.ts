@@ -1,15 +1,16 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { PostService } from './database/post/post.service';
 
 @Controller({
   path: '/',
   version: '1',
 })
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly postService: PostService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  async getHello() {
+    const result = await this.postService.getListPage();
+    return result;
   }
 }
