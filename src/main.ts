@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpLoggerMiddleware } from './middleware/http-logger.middleware';
-import { ErrorFilter } from './common/filters/error-filter';
+import { ErrorFilter } from './common/filters/error.ilter';
 import { VersioningType } from '@nestjs/common';
 import * as compression from 'compression';
 
