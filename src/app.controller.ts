@@ -15,6 +15,9 @@ export class AppController {
 
   @Get()
   async getHello() {
+    const rew = await this.cacheManager.get('ceshi');
+    console.log(rew);
+
     const result = await this.postService.getListPage();
     return result;
   }
