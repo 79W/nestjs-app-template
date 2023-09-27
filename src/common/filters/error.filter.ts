@@ -16,21 +16,32 @@ export class ErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-
-    const message = {
+    const result = {
       message: exception?.message || exception,
       time: Date.now(),
-      code: status,
+      code: HttpStatus.INTERNAL_SERVER_ERROR,
       data: null,
       path: request.path,
     };
 
-    logger.error(JSON.stringify(message));
+    if (exception instanceof HttpException) {
+      const exceptionResponse = exception.getResponse();
+      result.code = exception.getStatus() || exceptionResponse['statusCode'];
+      const message =
+        exception?.message || exceptionResponse['error'] || exception;
+      if (
+        exceptionResponse['message'] &&
+        Array.isArray(exceptionResponse['message'])
+      ) {
+        result.message = `${message}: ${exceptionResponse['message'].join(
+          ',',
+        )}.`;
+      } else {
+        result.message = message;
+      }
+    }
 
-    response.status(status).json(message);
+    logger.error(JSON.stringify(result));
+    response.status(result.code).json(result);
   }
 }
