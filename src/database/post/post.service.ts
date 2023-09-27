@@ -13,7 +13,6 @@ export class PostService {
   async getListPage() {
     const postBuider = this.postRepository
       .createQueryBuilder('post')
-      .where({ isDelete: false })
       .getManyAndCount();
     const [list, total] = await postBuider;
     return { list, total };
