@@ -1,4 +1,5 @@
 export const config = {
+  port: 3000,
   mysqlConfig: {
     host: '27.151.28.83',
     port: 3306,
