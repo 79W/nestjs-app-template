@@ -1,9 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { HttpLoggerMiddleware } from './middleware/http-logger.middleware';
-import { ErrorFilter } from './common/filters/error.filter';
-import { VersioningType } from '@nestjs/common';
 import * as compression from 'compression';
+import { VersioningType } from '@nestjs/common';
+import { AppModule } from './app.module';
+import { HttpLoggerMiddleware } from './common/middleware';
+import { ErrorFilter } from './common/filters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
