@@ -3,9 +3,11 @@ import { AppModule } from './app.module';
 import { HttpLoggerMiddleware } from './middleware/http-logger.middleware';
 import { ErrorFilter } from './common/error-filter';
 import { VersioningType } from '@nestjs/common';
+import * as compression from 'compression';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.use(compression());
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,
