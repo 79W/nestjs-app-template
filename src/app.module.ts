@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from './config';
 import { PostService } from './database/post/post.service';
 import entitys from './database/entitys';
+import { CacheModule } from '@nestjs/cache-manager';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -13,11 +15,20 @@ import entitys from './database/entitys';
         return {
           type: 'mysql',
           entities: [...entitys],
-          ...config.mysql_config,
+          ...config.mysqlConfig,
         };
       },
     }),
     TypeOrmModule.forFeature([...entitys]),
+    CacheModule.registerAsync({
+      useFactory: async () => {
+        const config = await configuration();
+        return {
+          store: redisStore,
+          ...config.redisConfig,
+        };
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [PostService],
