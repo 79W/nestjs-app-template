@@ -6,9 +6,13 @@ import { PostService } from './database/post/post.service';
 import entitys from './database/entitys';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-redis-store';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './schedule/tasks.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+    TasksModule,
     TypeOrmModule.forRootAsync({
       useFactory: async () => {
         const config = await configuration();
