@@ -10,7 +10,7 @@ export class TasksService {
   //   this.logger.debug('该方法将在45秒标记处每分钟运行一次');
   // }
 
-  // @Interval(10000)
+  // @Interval(1000)
   // handleInterval() {
   //   this.logger.debug('2');
   // }
