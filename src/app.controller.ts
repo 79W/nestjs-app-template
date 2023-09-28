@@ -19,6 +19,8 @@ export class AppController {
     console.log(rew);
 
     const result = await this.postService.getListPage();
-    return result;
+    return {
+      data: result,
+    };
   }
 }

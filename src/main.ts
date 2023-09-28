@@ -2,7 +2,10 @@ import { NestFactory } from '@nestjs/core';
 import * as compression from 'compression';
 import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import { HttpLoggerMiddleware } from './common/middleware';
+import {
+  HttpLoggerMiddleware,
+  TransformResponseMiddleware,
+} from './common/middleware';
 import { ErrorFilter } from './common/filters';
 import { configuration } from './config';
 
@@ -18,6 +21,7 @@ async function bootstrap() {
   app.useGlobalFilters(new ErrorFilter());
   app.use(new HttpLoggerMiddleware().use);
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalInterceptors(new TransformResponseMiddleware());
   await app.listen(config.port);
 }
 bootstrap();
