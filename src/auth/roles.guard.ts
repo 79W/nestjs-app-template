@@ -107,7 +107,7 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest<Request>();
-    const userId = request.customProps.user_id;
+    const userId = request?.customProps?.user_id || undefined;
     const userRole = Role.Guest;
     if (userId) {
       // 查询数据 然后或者角色在赋值
