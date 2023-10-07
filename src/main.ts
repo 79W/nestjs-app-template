@@ -38,7 +38,7 @@ async function bootstrap() {
 
   // 角色检验
   const reflector = new Reflector();
-  app.useGlobalGuards(new RolesGuard(reflector));
+  app.useGlobalGuards(new RolesGuard(reflector, cacheService));
 
   await app.listen(config.port);
 }

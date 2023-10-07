@@ -4,6 +4,8 @@ import { QueueService } from './queue/queue.service';
 import { JwtAuthService } from './auth/jwt.service';
 import { CacheService } from './cache/cache.service';
 import { configuration } from './config';
+import { Roles } from './auth/roles.decorator';
+import { Role } from './common/constants';
 
 @Controller({
   path: '/',
@@ -40,21 +42,21 @@ export class AppController {
   }
 
   @Get('/login')
+  @Roles(Role.Banned, Role.User, Role.Admin)
   async login() {
-    const payload = { username: 'user.username', sub: 'user.userId' };
+    const payload = { id: Date.now(), role: 'user' };
     const jwtInfo = await this.jwtService.generateToken(payload);
     const config = await configuration();
     let data = {};
     if (jwtInfo) {
       this.cacheService.set(
         `token:${jwtInfo.token}`,
-        jwtInfo,
+        { ...jwtInfo, ...payload },
         config.jwt.expiresIn,
       );
       data = {
-        user_info: jwtInfo.payload,
+        ...payload,
         token: jwtInfo.token,
-        ...jwtInfo,
       };
     }
     return {

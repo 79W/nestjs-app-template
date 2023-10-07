@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CacheService } from '../cache/cache.service';
 
@@ -17,7 +17,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
       if (!user && authorization && token && decryptedAuthorization) {
         this.cacheService.del(`token:${token}`);
-        throw new UnauthorizedException('token失效,请重新登陆后重试。');
+        throw new HttpException(
+          'token失效,请重新登陆后重试。',
+          HttpStatus.PROXY_AUTHENTICATION_REQUIRED,
+        );
       }
 
       if (!authorization) {
@@ -25,7 +28,10 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       }
       return user;
     } catch (error) {
-      throw new UnauthorizedException('token异常,请重新登陆后重试。');
+      throw new HttpException(
+        'token异常,请重新登陆后重试。',
+        HttpStatus.PROXY_AUTHENTICATION_REQUIRED,
+      );
     }
   }
 }
