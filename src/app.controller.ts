@@ -1,7 +1,6 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post } from '@nestjs/common';
 import { PostService } from './database/post/post.service';
 import { QueueService } from './queue/queue.service';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { JwtAuthService } from './auth/jwt.service';
 import { CacheService } from './cache/cache.service';
 import { configuration } from './config';
@@ -18,7 +17,14 @@ export class AppController {
     private readonly cacheService: CacheService,
   ) {}
 
-  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getHello2() {
+    const result = await this.postService.getListPage();
+    return {
+      data: result,
+    };
+  }
+
   @Post()
   async getHello() {
     console.log('这里是？');

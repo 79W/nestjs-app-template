@@ -1,17 +1,29 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private readonly cacheService: CacheService) {
+    super();
+  }
   handleRequest(err, user, info, context) {
-    console.log('这里是handleRequest：', err, user, info);
-    const request = context.switchToHttp().getRequest();
-    if (!request.headers.authorization) {
-      return true; // 没有传递 Token，继续执行下一步
+    try {
+      const request = context.switchToHttp().getRequest();
+      const authorization: string = request.headers.authorization || '';
+      const token: string = request.headers.token || '';
+      const decryptedAuthorization: string =
+        request.headers.decrypted_authorization || '';
+      if (!authorization) {
+        return true; // 没有传递 Token，继续执行下一步
+      }
+      if (!user && authorization && token && decryptedAuthorization) {
+        this.cacheService.del(`token:${token}`);
+        throw new UnauthorizedException('token失效,请重新登陆后重试。');
+      }
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('token异常,请重新登陆后重试。');
     }
-    if (!user) {
-      throw new UnauthorizedException('token失效,请重新登陆后重试。');
-    }
-    return user;
   }
 }
