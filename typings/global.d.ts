@@ -12,7 +12,9 @@ export declare global {
   namespace Express {
     interface Request {
       // customProps of pino-http
-      customProps: object;
+      customProps: {
+        user_id: string | number;
+      };
     }
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface User extends Payload {}

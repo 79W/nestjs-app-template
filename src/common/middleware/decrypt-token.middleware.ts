@@ -21,6 +21,7 @@ export class DecryptTokenMiddleware implements NestMiddleware {
         const info = JSON.parse(tokenJsonInfo);
         req.headers.decrypted_authorization = info.jwt.trim();
         req.headers.token = authorization[1].trim();
+        req.customProps.user_id = info.id;
       } catch (error) {
         throw new HttpException(
           'Unable to parse authorization token',

@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { CacheService } from '../cache/cache.service';
 import { Role } from '../common/constants';
+import { Request } from 'express';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -105,8 +106,14 @@ export class RolesGuard implements CanActivate {
     if (!roles) {
       return true;
     }
+    const request = context.switchToHttp().getRequest<Request>();
+    const userId = request.customProps.user_id;
+    const userRole = Role.Guest;
+    if (userId) {
+      // 查询数据 然后或者角色在赋值
+    }
     // 这里查询缓存 数据库拿用户的角色是什么
-    return this.hasRole(Role.Banned, roles);
+    return this.hasRole(userRole, roles);
     // const request = context.switchToHttp().getRequest();
     // const user = request.user;
     // return roles.includes(user.role);
